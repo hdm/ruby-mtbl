@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require 'mtbl'
+
+if ARGV.length == 0
+  $stderr.puts "#{$0} [mtbl1] [mtbl2] .. [mtblX]"
+  exit(1)
+end
+
+max_key_len = nil
+
+ARGV.each do |fname|
+  info = MTBL::Utils.metadata(fname)
+  info.each_pair do |k,v|
+    puts "#{k.to_s.gsub("_", " ")}: ".ljust(23) + v.to_s
+  end  
+end

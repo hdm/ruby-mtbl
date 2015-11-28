@@ -533,15 +533,15 @@ static VALUE rbmtbl_utils_metadata(VALUE class, VALUE fname) {
     rb_hash_aset(metadata, ID2SYM(rb_intern_const("filesize")), LL2NUM((size_t) ss.st_size));
     rb_hash_aset(metadata, ID2SYM(rb_intern_const("index_block_offset")), LL2NUM(index_block_offset));
     rb_hash_aset(metadata, ID2SYM(rb_intern_const("index_bytes")), LL2NUM(bytes_index_block));
-    rb_hash_aset(metadata, ID2SYM(rb_intern_const("index_bytes_p_index")), DBL2NUM(p_index));
+    rb_hash_aset(metadata, ID2SYM(rb_intern_const("index_bytes_pct")), DBL2NUM(p_index));
     rb_hash_aset(metadata, ID2SYM(rb_intern_const("data_block_bytes")), LL2NUM(bytes_data_blocks));
-    rb_hash_aset(metadata, ID2SYM(rb_intern_const("data_block_bytes_p_data")), DBL2NUM(p_data));
+    rb_hash_aset(metadata, ID2SYM(rb_intern_const("data_block_bytes_pct")), DBL2NUM(p_data));
     rb_hash_aset(metadata, ID2SYM(rb_intern_const("data_block_size")), LL2NUM(data_block_size));
     rb_hash_aset(metadata, ID2SYM(rb_intern_const("data_block_count")), LL2NUM(count_data_blocks));
     rb_hash_aset(metadata, ID2SYM(rb_intern_const("entry_count")), LL2NUM(count_entries));
     rb_hash_aset(metadata, ID2SYM(rb_intern_const("key_bytes")), LL2NUM(bytes_keys));
     rb_hash_aset(metadata, ID2SYM(rb_intern_const("value_bytes")), LL2NUM(bytes_values));
-    rb_hash_aset(metadata, ID2SYM(rb_intern_const("compression")), rb_str_new2(mtbl_compression_type_to_str(compression_algorithm)));
+    rb_hash_aset(metadata, ID2SYM(rb_intern_const("compression_algorithm")), rb_str_new2(mtbl_compression_type_to_str(compression_algorithm)));
     rb_hash_aset(metadata, ID2SYM(rb_intern_const("compactness")), DBL2NUM(compactness));
 
     mtbl_reader_destroy(&r);
@@ -576,6 +576,7 @@ void Init_mtbl() {
     rb_define_method(rb_cMTBLIterator, "initialize", rbmtbl_iterator_initialize, 1);
     rb_define_alloc_func(rb_cMTBLIterator, rbmtbl_iterator_alloc);
     rb_define_method(rb_cMTBLIterator, "next", rbmtbl_iterator_next, 0);
+    rb_define_method(rb_cMTBLIterator, "each", rbmtbl_iterator_next, 0);
 
     rb_define_method(rb_cMTBLWriter, "initialize", rbmtbl_writer_initialize, -1);
     rb_define_alloc_func(rb_cMTBLWriter, rbmtbl_writer_alloc);

@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'ostruct'
+require 'mtbl'
+
+options = OpenStruct.new
+OptionParser.new do |opt|
+  opt.on('-k', '--key-only', 'Display keys only') { |o| options.keys_only = true }
+  opt.on('-v', '--value-only', 'Display values only') { |o| options.vals_only = true }
+  opt.on('-p', '--prefix prefix', 'Display records with a specific prefix') { |o| options.prefix = o }
+  opt.on('-r', '--reverse-prefix prefix', 'Display records with a specific prefix (reversed)') { |o|
+    options.prefix = o.reverse
+    options.reverse_prefix = true
+  }
+end.parse!
+
+if ARGV.length == 0
+  $stderr.puts "#{$0} <options> [mtbl1] [mtbl2] .. [mtblX]"
+  exit(1)
+end
+
+ARGV.each do |fname|
+  reader   = MTBL::Reader.new(fname)
+  iterator = options.prefix ? reader.get_prefix(options.prefix) : reader.iterator
+  iterator.each do |r|
+
+    if options.reverse_prefix
+      r[0] = r[0].reverse
+    end
+
+    if options.keys_only
+      puts r[0]
+      next
+    end
+   
+    if options.vals_only
+      puts r[1]
+      next
+    end
+
+    puts r.join("\t")
+
+  end
+end
