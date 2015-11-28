@@ -1,5 +1,5 @@
 
-ruby interface to the `mtbl` library
+ruby interface to the library
 ====================================
 
 Introduction
