@@ -15,7 +15,7 @@ $ sudo apt install libmtbl-dev
 
 ## Usage
 
-## Generate a mtbl from unsorted input
+### Generate a mtbl from unsorted input
 ```
 require 'mtbl'
 msorter = MTBL::Sorter.new
@@ -26,7 +26,7 @@ msorter.add('key3', 'val3')
 msorter.write(mwriter)
 ```
 
-## Display metadata from a mtbl
+### Display metadata from a mtbl
 ```
 require 'mtbl'
 MTBL::Utils.metadata("tiny.mtbl").each_pair do |k,v|
@@ -34,7 +34,7 @@ MTBL::Utils.metadata("tiny.mtbl").each_pair do |k,v|
 end
 ```
 
-## Read all pairs from a mtbl
+### Read all pairs from a mtbl
 ```
 require 'mtbl'
 mreader = MTBL::Reader.new("tiny.mtbl")
@@ -43,7 +43,7 @@ mreader.iterator.each do |r|
 end
 ```
 
-## Read pairs starting with 'k'
+### Read pairs starting with 'k'
 ```
 require 'mtbl'
 mreader = MTBL::Reader.new("tiny.mtbl")
@@ -52,5 +52,6 @@ iterator.each do |r|
   puts r.join(" => ")
 end
 ```
+
 
 See the command-line tools in ``bin`` and ``examples/test.rb`` for additional usage.
