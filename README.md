@@ -1,6 +1,6 @@
 
 ruby interface to the mtbl library
-====================================
+==================================
 
 Introduction
 ------------
@@ -11,5 +11,9 @@ data structure. The latest version of `mtbl` depends on [zlib](http://www.zlib.n
 [LZ4](https://github.com/Cyan4973/lz4) (dev branch > 129), and [Snappy](http://google.github.io/snappy/) 
 compression libraries.
 
+On Ubuntu 16.04 LTS, the following command will install the required dependencies:
+```
+$ sudo apt install libmtbl-dev
+```
 This library is still a work in progress.
 

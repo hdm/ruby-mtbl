@@ -382,17 +382,16 @@ static VALUE rbmtbl_sorter_initialize(int argc, VALUE *argv, VALUE self) {
     scanc = rb_scan_args(argc, argv, "03", &mergef, &tempd, &maxm);
     mtbl_sorter_options_set_merge_func(sorter->o, (mtbl_merge_func) rbmbtl_default_merge_func, (void *) sorter);
 
-    if (scanc > 1) {
-        // Set the callback hook
+    if (scanc > 1 && mergef != Qnil) {
+        // TODO: Implement the merge callback
     }
 
-    if (scanc > 2) {
+    if (scanc > 2 && tempd != Qnil) {
         if (TYPE(tempd) != T_STRING) {
             rb_raise(rb_eArgError, "Temporary directory should be a string");
             return Qnil;
         }
-
-        if (! stat(StringValueCStr(tempd), &ss)) {
+        if (stat(StringValueCStr(tempd), &ss)) {
             rb_raise(rb_eArgError, "Temporary directory does not exist: %s", StringValueCStr(tempd));
             return Qnil;
         }
@@ -404,7 +403,7 @@ static VALUE rbmtbl_sorter_initialize(int argc, VALUE *argv, VALUE self) {
         mtbl_sorter_options_set_temp_dir(sorter->o, StringValueCStr(tempd));
     }
 
-    if (scanc > 3) {
+    if (scanc > 3 && maxm != Qnil) {
         mtbl_sorter_options_set_max_memory(sorter->o, NUM2ULONG(maxm));
     }
 

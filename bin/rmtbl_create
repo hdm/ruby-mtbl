@@ -1,0 +1,71 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'ostruct'
+require 'mtbl'
+require 'csv'
+
+compression_types = {
+    'none': MTBL::COMPRESSION_NONE,
+  'snappy': MTBL::COMPRESSION_SNAPPY,
+    'zlib': MTBL::COMPRESSION_ZLIB,
+     'lz4': MTBL::COMPRESSION_LZ4,
+   'lz4hc': MTBL::COMPRESSION_LZ4HC
+}
+
+
+options = OpenStruct.new
+OptionParser.new do |opt|
+  opt.on('-k', '--key-index index', 'The field number to use as a key') { |o| options.key_index = o.to_i }
+  opt.on('-v', '--value-index index', 'The field number to use as a value') { |o| options.val_index = o.to_i }
+  opt.on('-r', '--reverse-key', 'Store the key in reverse format') { |o| options.reverse_key = true }
+  opt.on('-c', '--compression type', 'Specify the compression algorithm (#compression_types.keys.join(", ")})') { |o| options.compression = o.to_sym }
+  opt.on('-d', '--delimiter byte', 'Specify the input field delimiter') { |o| options.delimiter = o }
+  opt.on('-M', '--max-fields count', 'Specify the maximum fields (additional delimiters considered data)') { |o| options.max_fields = o.to_i }
+  opt.on('-S', '--sort-skip', 'Skip the sorting phase (assumes sorted input)') { |o| options.skip_sort = true }
+  opt.on('-t', '--sort-temp path', 'The temporary directory to use during sorts') { |o| options.sort_tmp = File.expand_path(o) }
+  opt.on('-m', '--sort-mem ', 'The maximum memory to use during sorts in gigabytes (default 1G)') { |o| options.sort_mem = o.to_i * 1_000_000_000 }
+end.parse!
+
+if ARGV.length != 1
+  $stderr.puts "#{$0} <options> [output.mtbl]"
+  exit(1)
+end
+
+options.key_index   ||= 1
+options.val_index   ||= 2
+options.compression ||= :lz4
+options.delimiter   ||= ','
+options.max_fields  ||= -1
+
+ki = options.key_index - 1
+vi = options.val_index - 1
+
+dst = ARGV.shift
+out = nil
+wri = nil
+
+if ! compression_types[options.compression]
+  $stderr.puts "[-] Invalid compression type: #{options.compression}"
+  exit(1)
+end
+
+if options.skip_sort
+  out = MTBL::Writer.new(dst, compression_types[options.compression])
+else
+  out = MTBL::Sorter.new(nil, options.sort_tmp, options.sort_mem)
+  wri = MTBL::Writer.new(dst, compression_types[options.compression])
+end
+
+$stdin.set_encoding('BINARY')
+
+$stdin.each_line do |line|
+  row = line.strip.split(options.delimiter)
+  k = row[ki]
+  v = row[vi]
+  next unless (k && v)
+  k.reverse! if options.reverse_key
+  out.add(k, v)
+end
+
+out.write(wri) if wri

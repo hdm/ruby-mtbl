@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'ruby-mtbl'
-  s.version     = '1.0.0'
+  s.version     = '1.0.1'
   s.author      = 'HD Moore'
   s.email       = 'x@hdm.io'
   s.license     = 'Apache-2.0'
