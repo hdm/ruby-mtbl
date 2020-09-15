@@ -1,13 +1,13 @@
 PATH
   remote: .
   specs:
-    ruby-mtbl (1.0.0)
+    ruby-mtbl (1.0.1)
 
 GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.2.5)
-    rake (10.4.2)
+    rake (13.0.1)
     rake-compiler (0.9.5)
       rake
     rspec (3.4.0)
